@@ -1,21 +1,33 @@
 <template>
   <div class="clock">
-    <div v-if="isEnd && currentQuarter === '4'">Final</div>
+    <Live
+      v-if="game.statusGame === 'In Play'"
+      :isEnd="game.EndOfPeriod"
+      :currentQuarter="currentQuarter"
+      :clock="game.clock"
+    />
 
-    <div v-else>
-      <div class="center">Q{{ currentQuarter }}</div>
-      <div v-if="!isEnd">{{ clock }}</div>
-      <div v-else>0:00</div>
-    </div>
+    <Schedualed
+      v-else-if="game.statusGame === 'Scheduled'"
+      :start="game.startTimeUTC"
+    />
+
+    <Finished v-else-if="game.statusGame === 'Finished'" />
   </div>
 </template>
 
 <script>
+import Live from "./Games/Live";
+import Schedualed from "./Games/Schedualed";
+import Finished from "./Games/Finished";
 export default {
+  components: {
+    Live,
+    Schedualed,
+    Finished,
+  },
   props: {
-    clock: String,
-    quarter: String,
-    isEnd: Number,
+    game: Object,
   },
   data() {
     return {
@@ -23,7 +35,7 @@ export default {
     };
   },
   mounted() {
-    this.currentQuarter = this.quarter.split("")[0];
+    this.currentQuarter = this.game.currentPeriod.split("")[0];
   },
 };
 </script>
@@ -34,8 +46,5 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-.center {
-  text-align: center;
 }
 </style>

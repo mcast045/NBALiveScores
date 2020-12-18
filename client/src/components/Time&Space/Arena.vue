@@ -6,12 +6,12 @@
 </template>
 
 <script>
-export default {
-  props: {
-    city: String,
-    arena: String,
-  },
-};
+  export default {
+    props: {
+      city: String,
+      arena: String,
+    },
+  };
 </script>
 
 <style scoped>

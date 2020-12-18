@@ -2,31 +2,31 @@
   <div class="space-between game-card" v-if="game">
     <div class="game-card-flex">
       <Team :team="game.hTeam" :is_visitor="false" />
-      <Clock
-        :clock="game.clock"
-        :quarter="game.currentPeriod"
-        :isEnd="+game.EndOfPeriod"
-      />
+      <Clock :game="game" />
       <Team :team="game.vTeam" :is_visitor="true" />
     </div>
-    <Arena :arena="game.arena" :city="game.city" />
+    <Arena
+      v-if="game.statusGame === 'In Play'"
+      :arena="game.arena"
+      :city="game.city"
+    />
   </div>
 </template>
 
 <script>
-import Team from "./Teams/Team";
-import Arena from "./Time&Space/Arena";
-import Clock from "./Time&Space/Clock";
-export default {
-  components: {
-    Team,
-    Clock,
-    Arena,
-  },
-  props: {
-    game: Object,
-  },
-};
+  import Team from "./Teams/Team";
+  import Arena from "./Time&Space/Arena";
+  import Clock from "./Time&Space/Clock";
+  export default {
+    components: {
+      Team,
+      Clock,
+      Arena,
+    },
+    props: {
+      game: Object,
+    },
+  };
 </script>
 
 <style scoped>

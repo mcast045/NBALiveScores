@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <main id="app">
     <b-container class="games-container">
       <b-row v-for="(game, i) in games" :key="i">
         <b-col>
@@ -7,11 +7,13 @@
         </b-col>
       </b-row>
     </b-container>
-  </div>
+  </main>
 </template>
 
 <script>
 import Game from "./components/Game";
+import axios from "axios";
+import config from "./config/rapidAPI";
 export default {
   name: "App",
   components: {
@@ -20,16 +22,48 @@ export default {
   data() {
     return {
       games: [],
+      todayDate: "",
     };
   },
-  created() {
-    fetch("http://localhost:5000/games", { methods: "get" })
-      .then((res) => {
-        return res.json();
-      })
-      .then((jsonData) => {
-        this.games = jsonData;
-      });
+  methods: {
+    getGameDay(date) {
+      const today = date.slice(0, 10);
+      return `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8)}`;
+    },
+    async getLiveGames(config) {
+      const resLive = await axios.get(
+        "https://api-nba-v1.p.rapidapi.com/games/live/",
+        { headers: config }
+      );
+      this.games = resLive.data.api.games;
+
+      //Format Date
+      const resDate = new Date(resLive.headers.date);
+      console.log(resLive.headers.date);
+      this.todayDate = this.getGameDay(resDate.toISOString());
+
+      this.getSchedualedGames(config);
+    },
+    async getSchedualedGames(config) {
+      const resSchedule = await axios.get(
+        `https://api-nba-v1.p.rapidapi.com/games/date/${this.todayDate}`,
+        { headers: config }
+      );
+      const scheduale = resSchedule.data.api.games;
+      const nonLiveGames = [];
+      for (let i = 0; i < scheduale.length; i++) {
+        if (
+          this.games.findIndex(
+            (game) => scheduale[i].gameId === game.gameId
+          ) === -1
+        )
+          nonLiveGames.push(scheduale[i]);
+      }
+      this.games.push(...nonLiveGames);
+    },
+  },
+  async mounted() {
+    this.getLiveGames(config);
   },
 };
 </script>
@@ -52,5 +86,8 @@ export default {
 }
 .text-end {
   text-align: end;
+}
+.center {
+  text-align: center;
 }
 </style>

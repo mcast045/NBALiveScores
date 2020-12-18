@@ -1,7 +1,11 @@
 <template>
   <div class="team-info" :class="reverseDisplay">
     <div>
-      <Logo :image="team.logo" :is_visitor="is_visitor" />
+      <Logo
+        v-if="team.logo"
+        :image="team.logo"
+        :is_visitor="is_visitor"
+      />
       <Name :team="team" :is_visitor="is_visitor" />
     </div>
     <Score :team="team" :is_visitor="is_visitor" />

@@ -1,7 +1,7 @@
 <template>
-  <div class="logo-container" :class="isFlexEnd">
-    <b-img class="logo" :src="image" fluid alt="Responsive image"></b-img>
-  </div>
+  <figure class="logo-container" :class="isFlexEnd">
+    <b-img class="logo" :src="image" fluid alt=""></b-img>
+  </figure>
 </template>
 
 <script>
@@ -24,6 +24,7 @@ export default {
 <style scoped>
 .logo-container {
   display: flex;
+  margin: 0;
 }
 .logo-container .logo {
   width: 3rem;
